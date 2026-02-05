@@ -120,7 +120,7 @@ export default function Signup() {
             placeholder="Full Name"
             onChange={(event) => setNameInput(event.target.value)} // Update the state with user input
             value={nameInput} // Bind the input value to the state
-            className="input input-bordered input-accent w-full text-black" // Make text visible
+            className="input input-bordered input-accent w-full text-white" // Make text visible
           />
         </div>
 
@@ -133,9 +133,8 @@ export default function Signup() {
             placeholder="Email Address"
             onBlur={handleEmailError}
             onChange={(event) => setEmailInput(event.target.value)}
-            className={`input input-bordered ${
-              emailError ? "input-error" : "input-accent"
-            } text-black w-full`}
+            className={`input input-bordered ${emailError ? "input-error" : "input-accent"
+              } text-white w-full`}
           />
         </div>
 
@@ -147,7 +146,7 @@ export default function Signup() {
             type="password"
             placeholder="Password"
             onChange={(event) => setPasswordInput(event.target.value)}
-            className="input input-bordered input-accent w-full text-black"
+            className="input input-bordered input-accent w-full text-white"
           />
         </div>
 
@@ -160,9 +159,8 @@ export default function Signup() {
             placeholder="Confirm Password"
             onChange={(event) => setConfirmPassword(event.target.value)}
             onBlur={handlePasswordError}
-            className={`input input-bordered ${
-              passwordError ? "input-error" : "input-accent"
-            } text-black w-full`}
+            className={`input input-bordered ${passwordError ? "input-error" : "input-accent"
+              } text-white w-full`}
           />
         </div>
 

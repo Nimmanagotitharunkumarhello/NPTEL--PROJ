@@ -84,7 +84,7 @@ export default function Login(props) {
           onChange={(event) => setEmailInput(event.target.value)}
           onBlur={handleEmailError}
           className={`input input-bordered ${emailError ? "input-error" : "input-accent"} text-darkzero w-full`} 
-          style={{ color: 'black' }} // Enforcing black color for the text
+          style={{ color: 'white' }} // Enforcing white color for the text
         />
       </div>
   
@@ -97,7 +97,7 @@ export default function Login(props) {
           onChange={(event) => setPasswordInput(event.target.value)}
           onBlur={handlePasswordError}
           className={`input input-bordered ${passwordError ? "input-error" : "input-accent"} text-darkzero w-full`} 
-          style={{ color: 'black' }} // Enforcing black color for the text
+          style={{ color: 'white' }} // Enforcing white color for the text
         />
       </div>
   
