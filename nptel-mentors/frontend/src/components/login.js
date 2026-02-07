@@ -7,6 +7,14 @@ export default function Login(props) {
 
   const [selectedRole, setSelectedRole] = useState("student"); // Default role
 
+  const [emailInput, setEmailInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [formValid, setFormValid] = useState("");
+  const [success, setSuccess] = useState("");
+
   const handleEmailError = () => {
     if (!emailInput || !isEmail(emailInput)) {
       setEmailError(true);
