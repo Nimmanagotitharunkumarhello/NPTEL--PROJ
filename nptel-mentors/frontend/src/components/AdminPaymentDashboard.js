@@ -93,53 +93,138 @@ const AdminPaymentDashboard = () => {
     return (
         <div className="container mx-auto p-6 space-y-12">
 
-            {/* Payment Verification Section */}
-            <section>
-                <h1 className="text-3xl font-bold mb-6 text-[#800000]">Admin Dashboard</h1>
-                <h2 className="text-2xl font-bold mb-4">Payment Verification</h2>
-                {loading ? <p>Loading...</p> : (
+            const [paymentSearch, setPaymentSearch] = useState("");
+            const [mentorSearch, setMentorSearch] = useState("");
+
+    // ... existing loadData ...
+
+    // Filter Logic
+    const filteredPayments = pendingPayments.filter(student =>
+            (student.studentName?.toLowerCase() || "").includes(paymentSearch.toLowerCase()) ||
+            (student.regNo?.toLowerCase() || "").includes(paymentSearch.toLowerCase())
+            );
+
+    const filteredMentors = mentors.filter(mentor =>
+            (mentor.facultyName?.toLowerCase() || "").includes(mentorSearch.toLowerCase()) ||
+            (mentor.courseName?.toLowerCase() || "").includes(mentorSearch.toLowerCase())
+            );
+
+            return (
+            <div className="container mx-auto p-6 space-y-12">
+
+                {/* Payment Verification Section */}
+                <section>
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h1 className="text-3xl font-bold text-[#800000]">Admin Dashboard</h1>
+                            <h2 className="text-2xl font-bold mt-2">Payment Verification</h2>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search by Name or Reg No..."
+                            className="input input-bordered w-full max-w-xs"
+                            value={paymentSearch}
+                            onChange={(e) => setPaymentSearch(e.target.value)}
+                        />
+                    </div>
+
+                    {loading ? <p>Loading...</p> : (
+                        <div className="overflow-x-auto text-gray-900">
+                            <table className="min-w-full bg-white border border-gray-300 shadow-md rounded">
+                                <thead>
+                                    <tr className="bg-gray-100 border-b">
+                                        <th className="p-4 text-left">Reg No</th>
+                                        <th className="p-4 text-left">Name</th>
+                                        <th className="p-4 text-left">Course</th>
+                                        <th className="p-4 text-center">Screenshot</th>
+                                        <th className="p-4 text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredPayments.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="5" className="p-6 text-center text-gray-500">No pending payments found</td>
+                                        </tr>
+                                    ) : (
+                                        filteredPayments.map(student => (
+                                            <tr key={student.regNo} className="border-b hover:bg-gray-50">
+                                                <td className="p-4">{student.regNo}</td>
+                                                <td className="p-4">{student.studentName}</td>
+                                                <td className="p-4">{student.courseName}</td>
+                                                <td className="p-4 text-center">
+                                                    <button
+                                                        onClick={() => viewImage(student.paymentScreenshot)}
+                                                        className="text-blue-500 underline"
+                                                    >
+                                                        View Image
+                                                    </button>
+                                                </td>
+                                                <td className="p-4 flex justify-center gap-2">
+                                                    <button
+                                                        onClick={() => handleAction(student.regNo, 'Approve')}
+                                                        className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleAction(student.regNo, 'Reject')}
+                                                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                                    >
+                                                        Reject
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </section>
+
+                {/* Mentor Management Section */}
+                <section>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-2xl font-bold">Manage Mentors</h2>
+                        <input
+                            type="text"
+                            placeholder="Search by Faculty or Course..."
+                            className="input input-bordered w-full max-w-xs"
+                            value={mentorSearch}
+                            onChange={(e) => setMentorSearch(e.target.value)}
+                        />
+                    </div>
                     <div className="overflow-x-auto text-gray-900">
                         <table className="min-w-full bg-white border border-gray-300 shadow-md rounded">
                             <thead>
                                 <tr className="bg-gray-100 border-b">
-                                    <th className="p-4 text-left">Reg No</th>
-                                    <th className="p-4 text-left">Name</th>
+                                    <th className="p-4 text-left">Faculty Name</th>
                                     <th className="p-4 text-left">Course</th>
-                                    <th className="p-4 text-center">Screenshot</th>
+                                    <th className="p-4 text-left">Email</th>
+                                    <th className="p-4 text-center">Students</th>
                                     <th className="p-4 text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {pendingPayments.length === 0 ? (
+                                {filteredMentors.length === 0 ? (
                                     <tr>
-                                        <td colSpan="5" className="p-6 text-center text-gray-500">No pending payments</td>
+                                        <td colSpan="5" className="p-6 text-center text-gray-500">No mentors found</td>
                                     </tr>
                                 ) : (
-                                    pendingPayments.map(student => (
-                                        <tr key={student.regNo} className="border-b hover:bg-gray-50">
-                                            <td className="p-4">{student.regNo}</td>
-                                            <td className="p-4">{student.studentName}</td>
-                                            <td className="p-4">{student.courseName}</td>
+                                    filteredMentors.map(mentor => (
+                                        <tr key={mentor._id} className="border-b hover:bg-gray-50">
+                                            <td className="p-4 font-bold">{mentor.facultyName}</td>
+                                            <td className="p-4">{mentor.courseName}</td>
+                                            <td className="p-4">{mentor.emailId}</td>
+                                            <td className="p-4 text-center">
+                                                {mentor.currentStudentCount || 0} / {mentor.maxStudents || 25}
+                                            </td>
                                             <td className="p-4 text-center">
                                                 <button
-                                                    onClick={() => viewImage(student.paymentScreenshot)}
-                                                    className="text-blue-500 underline"
+                                                    onClick={() => handleDeleteMentor(mentor._id)}
+                                                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 font-bold"
                                                 >
-                                                    View Image
-                                                </button>
-                                            </td>
-                                            <td className="p-4 flex justify-center gap-2">
-                                                <button
-                                                    onClick={() => handleAction(student.regNo, 'Approve')}
-                                                    className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
-                                                >
-                                                    Approve
-                                                </button>
-                                                <button
-                                                    onClick={() => handleAction(student.regNo, 'Reject')}
-                                                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                                                >
-                                                    Reject
+                                                    Delete
                                                 </button>
                                             </td>
                                         </tr>
@@ -148,54 +233,9 @@ const AdminPaymentDashboard = () => {
                             </tbody>
                         </table>
                     </div>
-                )}
-            </section>
-
-            {/* Mentor Management Section */}
-            <section>
-                <h2 className="text-2xl font-bold mb-4">Manage Mentors</h2>
-                <div className="overflow-x-auto text-gray-900">
-                    <table className="min-w-full bg-white border border-gray-300 shadow-md rounded">
-                        <thead>
-                            <tr className="bg-gray-100 border-b">
-                                <th className="p-4 text-left">Faculty Name</th>
-                                <th className="p-4 text-left">Course</th>
-                                <th className="p-4 text-left">Email</th>
-                                <th className="p-4 text-center">Students</th>
-                                <th className="p-4 text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {mentors.length === 0 ? (
-                                <tr>
-                                    <td colSpan="5" className="p-6 text-center text-gray-500">No mentors found</td>
-                                </tr>
-                            ) : (
-                                mentors.map(mentor => (
-                                    <tr key={mentor._id} className="border-b hover:bg-gray-50">
-                                        <td className="p-4 font-bold">{mentor.facultyName}</td>
-                                        <td className="p-4">{mentor.courseName}</td>
-                                        <td className="p-4">{mentor.emailId}</td>
-                                        <td className="p-4 text-center">
-                                            {mentor.currentStudentCount || 0} / {mentor.maxStudents || 25}
-                                        </td>
-                                        <td className="p-4 text-center">
-                                            <button
-                                                onClick={() => handleDeleteMentor(mentor._id)}
-                                                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 font-bold"
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
-    );
+                </section>
+            </div>
+            );
 };
 
-export default AdminPaymentDashboard;
+            export default AdminPaymentDashboard;

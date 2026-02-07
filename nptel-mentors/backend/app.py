@@ -426,7 +426,8 @@ def get_faculties():
                 "instructorName": mentor.get("instructorName", "Unknown Instructor"),
                 "duration": mentor.get("duration", "Unknown Duration"),
                 "currentStudentCount": mentor.get("currentStudentCount", 0),
-                "maxStudents": mentor.get("maxStudents", 25)
+                "maxStudents": mentor.get("maxStudents", 25),
+                "_id": str(mentor["_id"])
             }
             for mentor in mentors
         ]
