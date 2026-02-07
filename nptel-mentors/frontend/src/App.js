@@ -10,22 +10,28 @@ import Login from './components/login';
 import ViewAssignedStudents from './components/ViewAssignedStudents';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
+import AdminPaymentDashboard from './components/AdminPaymentDashboard';
 
 function App() {
   const [loading, setLoading] = useState(true); // Loading state for initial checks
   const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem("token"));
   const [faculties, setFaculties] = useState([]); // State to store faculty data
+  const [userRole, setUserRole] = useState(() => localStorage.getItem("role"));
 
   // Handle user login
-  const handleLogin = (token) => {
+  const handleLogin = (token, role) => {
     localStorage.setItem("token", token);
+    localStorage.setItem("role", role);
     setIsAuthenticated(true);
+    setUserRole(role);
   };
 
   // Handle user logout
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("role");
     setIsAuthenticated(false);
+    setUserRole(null);
   };
 
   // Fetch faculty data
@@ -51,6 +57,7 @@ function App() {
     // Check authentication status
     const token = localStorage.getItem("token");
     setIsAuthenticated(!!token);
+    setUserRole(localStorage.getItem("role"));
   }, []);
 
   // Render loading screen while data is being fetched
@@ -71,29 +78,48 @@ function App() {
             overflowY: 'auto', // Ensures that the background extends with scrolling content
           }}
         >
-          <Navbar onLogout={handleLogout} isAuthenticated={isAuthenticated} />
+          <Navbar onLogout={handleLogout} isAuthenticated={isAuthenticated} userRole={userRole} />
           <div className="w-[80%] mx-auto pt-10 pb-2">
             <Routes>
               {/* Public Routes */}
               <Route path="/login" element={<Login onLogin={handleLogin} />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} /> 
+              <Route path="/reset-password" element={<ResetPassword />} />
 
               {/* Private Routes */}
               {isAuthenticated ? (
                 <>
                   <Route path="/courses" element={<Courses />} />
-                  <Route path="/mentors" element={<Mentors faculties={faculties} />} />
-                  <Route path="/students" element={<Students />} />
-                  <Route path="/view-assigned-students" element={<ViewAssignedStudents />} />
+
+                  {/* Student Routes */}
+                  {(userRole === 'student' || userRole === 'admin') && (
+                    <Route path="/students" element={<Students />} />
+                  )}
+
+                  {/* Mentor Routes */}
+                  {(userRole === 'mentor' || userRole === 'admin') && (
+                    <>
+                      <Route path="/mentors" element={<Mentors faculties={faculties} />} />
+                      <Route path="/view-assigned-students" element={<ViewAssignedStudents />} />
+                    </>
+                  )}
+
+                  {/* Admin Routes */}
+                  {userRole === 'admin' && (
+                    <Route path="/admin" element={<AdminPaymentDashboard />} />
+                  )}
+
+                  {/* Redirect based on role if hitting root or unknown while auth */}
+                  <Route path="/" element={
+                    userRole === 'admin' ? <Navigate to="/admin" replace /> :
+                      userRole === 'mentor' ? <Navigate to="/mentors" replace /> :
+                        <Navigate to="/students" replace />
+                  } />
                 </>
               ) : (
                 <Route path="*" element={<Navigate to="/login" replace />} />
               )}
-
-              {/* Default route */}
-              <Route path="/" element={isAuthenticated ? <Courses /> : <Navigate to="/login" replace />} />
             </Routes>
           </div>
         </div>
