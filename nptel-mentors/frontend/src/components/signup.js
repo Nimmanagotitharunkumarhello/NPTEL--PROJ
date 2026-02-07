@@ -79,9 +79,10 @@ export default function Signup() {
         confirmPassword: confirmPassword, // Include confirmPassword in the payload
       }),
     })
-      .then((response) => {
+      .then(async (response) => {
         if (!response.ok) {
-          throw new Error("Error in Signup");
+          const errorText = await response.text();
+          throw new Error(errorText || "Error in Signup");
         }
         return response.json();
       })
@@ -92,7 +93,7 @@ export default function Signup() {
       })
       .catch((error) => {
         setIsLoading(false);
-        setFormValid("An error occurred. Please try again.");
+        setFormValid(error.message);
         console.error(error);
       });
   };

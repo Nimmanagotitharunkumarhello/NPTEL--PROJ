@@ -1,0 +1,4 @@
+
+--- Database: course_enrollment ---
+Mentors count: 1
+{'_id': ObjectId('698774a03710d7e28894341c'), 'facultyName': 'yash', 'erpId': '1234', 'department': 'CSE', 'emailId': 'hell@gmail.com', 'courseName': 'programming in java', 'instructorName': 'Prof. Debasis Samanta', 'duration': '12 weeks', 'createdAt': datetime.datetime(2026, 2, 7, 17, 21, 36, 514000)}
